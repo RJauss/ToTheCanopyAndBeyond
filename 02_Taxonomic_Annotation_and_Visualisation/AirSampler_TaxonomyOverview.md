@@ -1,8 +1,7 @@
 AirSampler TaxonomyOverview
 ================
 
-Load Data
----------
+## Load Data
 
 ``` r
 rm(list = ls())
@@ -61,8 +60,7 @@ TAX_tree = rbind(TAX_tmp0,
 TAX_nodes$size = as.numeric(TAX_nodes$size)
 ```
 
-Prepare Graph
--------------
+## Prepare Graph
 
 ``` r
 edges = as.data.frame(TAX_tree)
@@ -77,7 +75,7 @@ vertices$BaseHitsMasked = ifelse(grepl("NoHit", vertices$BaseHits),
                                  "NoHit", 
                                  vertices$BaseHits)
 # Here we look for the ten most abundant species
-vertices$TopHits = ifelse(vertices$size %in% seq(from = 0, to = 44000, by = 1), 
+vertices$TopHits = ifelse(vertices$size %in% seq(from = 0, to = 46000, by = 1), 
                           NA, 
                           as.character(vertices$Node1))
 vertices$TopHitsMasked = 
@@ -105,8 +103,7 @@ graph = graph_from_data_frame(edges, vertices = vertices, directed = T)
 set.seed(1)
 ```
 
-Plot
-----
+## Plot
 
 ``` r
 g = ggraph(graph, 'partition', circular = F, weight = size) + 
@@ -150,10 +147,9 @@ g = g +
 g
 ```
 
-![](AirSampler_TaxonomyOverview_files/figure-markdown_github/plot-1.png)
+![](AirSampler_TaxonomyOverview_files/figure-gfm/plot-1.png)<!-- -->
 
-Cercozoa
---------
+## Cercozoa
 
 ``` r
 TAX_cerco = read.csv("../00_Data/Cercozoa/04_Cercozoa_OTU_ContingencyTable_filtered_sequences_NCBI-nt_blasted_sorted_BestHit_TaxonomyTable_Cercozoa_sequences_vsearch-V4-BestHit_AnnotationRefined_noPipe.tsv", 
@@ -213,7 +209,7 @@ vertices_cerco$BaseHits = ifelse(vertices_cerco$size != 0,
 vertices_cerco$BaseHitsMasked = ifelse(grepl("NoHit", vertices_cerco$BaseHits), 
                                  "NoHit", 
                                  vertices_cerco$BaseHits)
-vertices_cerco$TopHits = ifelse(vertices_cerco$size %in% seq(from = 0, to = 10000, by = 1), 
+vertices_cerco$TopHits = ifelse(vertices_cerco$size %in% seq(from = 0, to = 20000, by = 1), 
                           NA, 
                           as.character(vertices_cerco$Node1))
 vertices_cerco$TopHitsMasked = ifelse(grepl("NoHit", vertices_cerco$TopHits), 
@@ -282,10 +278,9 @@ g_cerco = g_cerco +
 g_cerco
 ```
 
-![](AirSampler_TaxonomyOverview_files/figure-markdown_github/CercoTaxonomy-1.png)
+![](AirSampler_TaxonomyOverview_files/figure-gfm/CercoTaxonomy-1.png)<!-- -->
 
-Combine
--------
+## Combine
 
 ``` r
 g$labels$title = NULL
@@ -304,13 +299,16 @@ combi = ggarrange(g_cerco, g,
 #       device = "tiff", dpi = 600, width = 28, height = 11, 
 #       units = "cm")
 ggsave("AirSampler_TaxonomicCompositionCombined.png", plot = combi, 
-       device = "png", dpi = 300, width = 20, height = 20, 
+       device = "png", dpi = 300, width = 22, height = 22, 
+       units = "cm")
+ggsave("AirSampler_TaxonomicCompositionCombined.jpeg", plot = combi, 
+       device = "jpeg", dpi = 300, width = 22, height = 22, 
        units = "cm")
 ggsave("AirSampler_TaxonomicCompositionCombined.pdf", plot = combi, 
-       device = "pdf", dpi = 300, width = 20, height = 20, 
+       device = "pdf", dpi = 300, width = 22, height = 22, 
        units = "cm")
 
 combi
 ```
 
-![](AirSampler_TaxonomyOverview_files/figure-markdown_github/CombineTaxonomy-1.png)
+![](AirSampler_TaxonomyOverview_files/figure-gfm/CombineTaxonomy-1.png)<!-- -->

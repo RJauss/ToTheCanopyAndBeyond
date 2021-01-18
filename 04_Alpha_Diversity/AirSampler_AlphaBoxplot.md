@@ -1,8 +1,7 @@
 AirSampler AlphaBoxplot
 ================
 
-Load Data
----------
+## Load Data
 
 ``` r
 rm(list = ls())
@@ -20,25 +19,26 @@ OTU_Table = as.data.frame(read.csv("../00_Data/Oomycota/05_Oomycota_OTU_Table_ne
                      stringsAsFactors = T))
 SampleMetadata = OTU_Table[,1:5]
 Stratum = SampleMetadata$Stratum
-Season = SampleMetadata$Season
+TimePoint = SampleMetadata$TimePoint
 OTU_Table = OTU_Table[,6:ncol(OTU_Table)]
 ```
 
-Calculate Alpha Diversity
--------------------------
+## Calculate Alpha Diversity
 
-To run the diversity analyses, simply load the table and specify the `index` - in this case: The Simpson index. Then convert it into a dataframe and add the metadata and group.
+To run the diversity analyses, simply load the table and specify the
+`index` - in this case: The Simpson index. Then convert it into a
+dataframe and add the metadata and group.
 
 ``` r
 shannon = diversity(OTU_Table, index = "shannon")
 shannon = as.data.frame(shannon)
-shannon$Comparison = Season
+shannon$Comparison = TimePoint
 rownames(shannon) = SampleMetadata$SampleID
 shannon$Group = "Oomycota"
 df = shannon
 df$richness = specnumber(OTU_Table)
 df$evenness = df$shannon/log(df$richness)
-df$Type = "Season"
+df$Type = "TimePoint"
 df2 = df
 df2$Comparison = Stratum
 df2$Type = "Stratum"
@@ -48,10 +48,10 @@ df_melted = reshape2::melt(df3)
 
     ## Using Comparison, Group, Type as id variables
 
-Plot the Figure
----------------
+## Plot the Figure
 
-Now we put the diverity measurements into a habitat specific context. It can be easiest visualised in a boxplot:
+Now we put the diverity measurements into a habitat specific context. It
+can be easiest visualised in a boxplot:
 
 ``` r
 g = ggplot(df_melted, aes(x = Type, y = value, fill = Comparison)) + 
@@ -72,18 +72,18 @@ g = ggplot(df_melted, aes(x = Type, y = value, fill = Comparison)) +
   #geom_signif(comparisons = list(c("Canopy", "Ground")), 
   #            map_signif_level=TRUE) +
   stat_compare_means(aes(group = Comparison), label = "p.signif", 
-                     size = 5, method = "wilcox.test") +
+                     size = 5, method = "wilcox.test", 
+                     vjust = 1) +
   scale_fill_manual(values = c("darkslategrey", "firebrick", 
                                "darkolivegreen4", "burlywood3"), 
                     limits = c("March", "May", "Canopy", "Ground"), 
-                    name = "Season/Stratum") +
+                    name = "TimePoint/\nStratum") +
   facet_grid(rows = vars(variable), scales = "free", switch = "y")
 ```
 
-Cercozoa
---------
+## Cercozoa
 
-Let's check if the Cercozoa show a similar pattern:
+Let’s check if the Cercozoa show a similar pattern:
 
 ``` r
 Cerco_OTU_Table = as.data.frame(read.csv("../00_Data/Cercozoa/05_Cercozoa_OTU_Table_min-freq-16922_min-feat-5_transposed_withMetadata.tsv", 
@@ -91,7 +91,7 @@ Cerco_OTU_Table = as.data.frame(read.csv("../00_Data/Cercozoa/05_Cercozoa_OTU_Ta
                      sep = "\t", 
                      stringsAsFactors = T))
 Cerco_SampleMetadata = Cerco_OTU_Table[,1:5]
-Cerco_Season = Cerco_SampleMetadata$Season
+Cerco_TimePoint = Cerco_SampleMetadata$TimePoint
 Cerco_Stratum = Cerco_SampleMetadata$Stratum
 Cerco_OTU_Table = Cerco_OTU_Table[,6:ncol(Cerco_OTU_Table)]
 
@@ -99,12 +99,12 @@ Cerco_shannon = diversity(Cerco_OTU_Table, index = "shannon")
 Cerco_shannon = as.data.frame(Cerco_shannon)
 rownames(Cerco_shannon) = Cerco_SampleMetadata$SampleID
 colnames(Cerco_shannon) = "shannon"
-Cerco_shannon$Comparison = Cerco_Season
+Cerco_shannon$Comparison = Cerco_TimePoint
 Cerco_shannon$Group = "Cercozoa"
 df_cerco = Cerco_shannon
 df_cerco$richness = specnumber(Cerco_OTU_Table)
 df_cerco$evenness = df_cerco$shannon/log(df_cerco$richness)
-df_cerco$Type = "Season"
+df_cerco$Type = "TimePoint"
 df_cerco2 = df_cerco
 df_cerco2$Comparison = Cerco_Stratum
 df_cerco2$Type = "Stratum"
@@ -113,8 +113,7 @@ df_cerco_3 = rbind(df_cerco, df_cerco2)
 df_cerco_melted = reshape2::melt(df_cerco_3)
 ```
 
-Plot Cercozoa Figure
---------------------
+## Plot Cercozoa Figure
 
 ``` r
 g_cerco = ggplot(df_cerco_melted, aes(x = Type, y = value, fill = Comparison)) + 
@@ -135,16 +134,16 @@ g_cerco = ggplot(df_cerco_melted, aes(x = Type, y = value, fill = Comparison)) +
   #geom_signif(comparisons = list(c("Canopy", "Ground")), 
   #            map_signif_level=TRUE) + 
   stat_compare_means(aes(group = Comparison), label = "p.signif", 
-                     size = 5, method = "wilcox.test") +
+                     size = 5, method = "wilcox.test", 
+                     vjust = 1) +
   scale_fill_manual(values = c("darkslategrey", "firebrick", 
                                "darkolivegreen4", "burlywood3"), 
                     limits = c("March", "May", "Canopy", "Ground"), 
-                    name = "Season/Stratum") +
+                    name = "TimePoint/\nStratum") +
   facet_grid(rows = vars(variable), scales = "free", switch = "y")
 ```
 
-Combine Plots
--------------
+## Combine Plots
 
 ``` r
 combi = ggarrange(g_cerco, g, 
@@ -170,4 +169,4 @@ ggsave("AlphaBoxplotCombined.pdf", plot = combi,
 combi
 ```
 
-![](AirSampler_AlphaBoxplot_files/figure-markdown_github/unnamed-chunk-1-1.png)
+![](AirSampler_AlphaBoxplot_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->

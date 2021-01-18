@@ -1,19 +1,13 @@
 AirSampler\_Sankey
 ================
 
-Load Data
----------
+## Load Data
 
 ``` r
 rm(list = ls())
 
 library(ggplot2)
 library(ggpubr)
-```
-
-    ## Loading required package: magrittr
-
-``` r
 library(ggalluvial)
 
 OTU_Table = as.data.frame(read.csv("../00_Data/Oomycota/05_Oomycota_OTU_Table_new_min-freq-20617_min-feat-5_transposed_withMetadata.tsv", 
@@ -22,7 +16,7 @@ OTU_Table = as.data.frame(read.csv("../00_Data/Oomycota/05_Oomycota_OTU_Table_ne
                      stringsAsFactors = T))
 SampleMetadata = OTU_Table[,1:5]
 Stratum = SampleMetadata$Stratum
-Season = SampleMetadata$Season
+TimePoint = SampleMetadata$TimePoint
 OTU_Table = OTU_Table[,6:ncol(OTU_Table)]
 species = as.matrix(OTU_Table)
 
@@ -39,7 +33,7 @@ TAX$OTU_ID = paste0("OTU", TAX$OTU_Number, "_", TAX$Species)
 TAX$Class = "Oomycota"
 
 AlluvialData = data.frame("Group" = rep(unique(TAX$Order), 2))
-AlluvialData$Season = rep(c("March", "May"), each = 4)
+AlluvialData$TimePoint = rep(c("March", "May"), each = 4)
 
 ## Remove Albuginales and Order_NoHit because of very low abundance
 
@@ -47,19 +41,19 @@ AlluvialData = AlluvialData[AlluvialData$Group != "Albuginales",]
 AlluvialData = AlluvialData[AlluvialData$Group != "Order_NoHit",]
 
 summer = function(a, b){
-  sum(species[SampleMetadata$Season == a, TAX$Order == b])
+  sum(species[SampleMetadata$TimePoint == a, TAX$Order == b])
 }
 
-AlluvialData$Reads = mapply(summer, AlluvialData$Season, AlluvialData$Group)
+AlluvialData$Reads = mapply(summer, AlluvialData$TimePoint, AlluvialData$Group)
 
-g = ggplot(AlluvialData, aes(y = Reads, axis1 = Group, axis2 = Season)) +
+g = ggplot(AlluvialData, aes(y = Reads, axis1 = Group, axis2 = TimePoint)) +
   geom_alluvium(aes(fill = Group), width = 1/12, alpha = 0.8) + 
   geom_stratum(aes(fill = Group), alpha = 0.8, 
                width = 1/12, color = "black") +
   #geom_text(stat = "stratum", aes(label = after_stat(stratum)), 
   #           size = 3) +
-  geom_text(stat = "stratum", aes(label = Season), angle = 90, fontface = "bold", size = 4) +
-  scale_x_discrete(limits = c("Group", "Season"), expand = c(.05, .05)) +
+  geom_text(stat = "stratum", aes(label = TimePoint), angle = 90, fontface = "bold", size = 4) +
+  scale_x_discrete(limits = c("Group", "TimePoint"), expand = c(.05, .05)) +
   scale_fill_manual(values = colorRampPalette(c("slategray4", "slategray3", "slategray2"))(length(unique(AlluvialData$Group)))) +
   theme_minimal() + 
   scale_y_continuous(label = scales::comma) +
@@ -73,10 +67,9 @@ g = ggplot(AlluvialData, aes(y = Reads, axis1 = Group, axis2 = Season)) +
 g
 ```
 
-![](AirSampler_Sankey_files/figure-markdown_github/unnamed-chunk-1-1.png)
+![](AirSampler_Sankey_files/figure-gfm/unnamed-chunk-1-1.png)<!-- -->
 
-Cerco
------
+## Cerco
 
 ``` r
 TAX_cerco = read.csv("../00_Data/Cercozoa/04_Cercozoa_OTU_ContingencyTable_filtered_sequences_NCBI-nt_blasted_sorted_BestHit_TaxonomyTable_Cercozoa_sequences_vsearch-V4-BestHit_AnnotationRefined_noPipe.tsv", 
@@ -101,7 +94,7 @@ TAX_cerco$Class = "Cercozoa"
 
 
 AlluvialData_cerco = data.frame("Group" = rep(unique(TAX_cerco$Order), 2))
-AlluvialData_cerco$Season = rep(c("March", "May"), 
+AlluvialData_cerco$TimePoint = rep(c("March", "May"), 
                           each = length(unique(TAX_cerco$Order)))
 
 ## Remove Cercozoa_XX and Marimonadida because of low abundance
@@ -109,19 +102,19 @@ AlluvialData_cerco = AlluvialData_cerco[AlluvialData_cerco$Group != "Marimonadid
 AlluvialData_cerco = AlluvialData_cerco[AlluvialData_cerco$Group != "Order_NoHit",]
 
 summer_cerco = function(a, b){
-  sum(species_cerco[SampleMetadata_Cerco$Season == a, TAX_cerco$Order == b])
+  sum(species_cerco[SampleMetadata_Cerco$TimePoint == a, TAX_cerco$Order == b])
 }
 
-AlluvialData_cerco$Reads = mapply(summer_cerco, AlluvialData_cerco$Season, AlluvialData_cerco$Group)
+AlluvialData_cerco$Reads = mapply(summer_cerco, AlluvialData_cerco$TimePoint, AlluvialData_cerco$Group)
 
 g_cerco = ggplot(AlluvialData_cerco, 
-                 aes(y = Reads, axis1 = Group, axis2 = Season)) +
+                 aes(y = Reads, axis1 = Group, axis2 = TimePoint)) +
   geom_alluvium(aes(fill = Group), width = 1/12, alpha = 0.8) + 
   geom_stratum(aes(fill = Group), width = 1/12, alpha = 0.8, color = "black") +
   #geom_text(stat = "stratum", aes(label = after_stat(stratum)), 
   #           size = 3) +
-  geom_text(stat = "stratum", aes(label = Season), angle = 90, fontface = "bold", size = 4, color = "black") +
-  scale_x_discrete(limits = c("Group", "Season"), expand = c(.05, .05)) +
+  geom_text(stat = "stratum", aes(label = TimePoint), angle = 90, fontface = "bold", size = 4, color = "black") +
+  scale_x_discrete(limits = c("Group", "TimePoint"), expand = c(.05, .05)) +
   #scale_fill_manual(values = colorRampPalette(c("indianred4", "#fb6a4a", "#fcae91", "#fee5d9"))(length(unique(AlluvialData_cerco$Group)))) +
   scale_fill_viridis_d(option = "magma", begin = 0.3) +
   theme_minimal() + 
@@ -136,10 +129,9 @@ g_cerco = ggplot(AlluvialData_cerco,
 g_cerco
 ```
 
-![](AirSampler_Sankey_files/figure-markdown_github/CercozoaSankey-1.png)
+![](AirSampler_Sankey_files/figure-gfm/CercozoaSankey-1.png)<!-- -->
 
-Combine
--------
+## Combine
 
 ``` r
 combi = ggarrange(g_cerco, g, 
@@ -168,4 +160,4 @@ ggsave("SankeyCombined.pdf", plot = combi,
 combi
 ```
 
-![](AirSampler_Sankey_files/figure-markdown_github/CombineSankey-1.png)
+![](AirSampler_Sankey_files/figure-gfm/CombineSankey-1.png)<!-- -->

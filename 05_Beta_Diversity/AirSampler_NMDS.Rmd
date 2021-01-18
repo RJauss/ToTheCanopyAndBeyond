@@ -47,7 +47,7 @@ OTU.NMDS.bray = metaMDS(Dist, # The distance matrix
 # Get the sample scores and add the metadata
 data.scores = as.data.frame(scores(OTU.NMDS.bray))
 data.scores$site = rownames(data.scores)
-data.scores$Season = SampleMetadata$Season
+data.scores$TimePoint = SampleMetadata$TimePoint
 data.scores$Stratum = SampleMetadata$Stratum
 data.scores$TreeSpecies = SampleMetadata$TreeSpecies
 data.scores$SampleID = SampleMetadata$X.SampleID
@@ -60,8 +60,8 @@ Group.Fraxinus = data.scores[data.scores$TreeSpecies == "Ash",][chull(data.score
 Group.Crane = data.scores[data.scores$TreeSpecies == "Crane",][chull(data.scores[data.scores$TreeSpecies == "Crane", c("NMDS1", "NMDS2")]), ]
 
 # The hull-data will be needed by ggplot later to draw the polygons
-Group.May = data.scores[data.scores$Season == "May",][chull(data.scores[data.scores$Season == "May", c("NMDS1", "NMDS2")]), ]
-Group.March = data.scores[data.scores$Season == "March",][chull(data.scores[data.scores$Season == "March", c("NMDS1", "NMDS2")]), ]
+Group.May = data.scores[data.scores$TimePoint == "May",][chull(data.scores[data.scores$TimePoint == "May", c("NMDS1", "NMDS2")]), ]
+Group.March = data.scores[data.scores$TimePoint == "March",][chull(data.scores[data.scores$TimePoint == "March", c("NMDS1", "NMDS2")]), ]
 
 Group.Canopy = data.scores[data.scores$Stratum == "Canopy",][chull(data.scores[data.scores$Stratum == "Canopy", c("NMDS1", "NMDS2")]), ]
 Group.Ground = data.scores[data.scores$Stratum == "Ground",][chull(data.scores[data.scores$Stratum == "Ground", c("NMDS1", "NMDS2")]), ]
@@ -70,7 +70,7 @@ Group.Ground = data.scores[data.scores$Stratum == "Ground",][chull(data.scores[d
 
 hull.data_TreeSpecies = rbind(Group.Tilia, Group.Quercus, Group.Fraxinus, Group.Crane)
 
-hull.data_Season = rbind(Group.May, Group.March)
+hull.data_TimePoint = rbind(Group.May, Group.March)
 
 hull.data_Stratum = rbind(Group.Canopy, Group.Ground)
 
@@ -88,8 +88,8 @@ g = ggplot() +
              aes(x = NMDS1, y = NMDS2), 
              size = 3,
              color = "#5d5f66") + 
-  geom_polygon(data = hull.data_Season, 
-               aes(x=NMDS1, y=NMDS2, group = Season, color = Season), 
+  geom_polygon(data = hull.data_TimePoint, 
+               aes(x=NMDS1, y=NMDS2, group = TimePoint, color = TimePoint), 
                alpha = 0.7, fill = NA, linetype = "dashed") +
   scale_color_manual(values = c("darkslategrey", "firebrick")) +
   geom_text(aes(x = -0.2, y = -0.5, label = as.character(paste0(OTU.NMDS.bray$ndim, "D Stress: ", round(as.numeric(OTU.NMDS.bray$stress), digits = 3)))), parse = F, color = "#5d5f66", size = 4) +
@@ -134,7 +134,7 @@ OTU.NMDS.bray_cerco = metaMDS(species_mat_cerco, # The distance matrix
 # Get the sample scores and add the metadata
 data.scores_cerco = as.data.frame(scores(OTU.NMDS.bray_cerco))
 data.scores_cerco$site = rownames(data.scores_cerco)
-data.scores_cerco$Season = SampleMetadata_cerco$Season
+data.scores_cerco$TimePoint = SampleMetadata_cerco$TimePoint
 data.scores_cerco$Stratum = SampleMetadata_cerco$Stratum
 data.scores_cerco$TreeSpecies = SampleMetadata_cerco$TreeSpecies
 data.scores_cerco$SampleID = SampleMetadata_cerco$X.SampleID
@@ -147,8 +147,8 @@ Group_cerco.Fraxinus = data.scores_cerco[data.scores_cerco$TreeSpecies == "Ash",
 Group_cerco.Crane = data.scores_cerco[data.scores_cerco$TreeSpecies == "Crane",][chull(data.scores_cerco[data.scores_cerco$TreeSpecies == "Crane", c("NMDS1", "NMDS2")]), ]
 
 # The hull-data will be needed by ggplot later to draw the polygons
-Group_cerco.May = data.scores_cerco[data.scores_cerco$Season == "May",][chull(data.scores_cerco[data.scores_cerco$Season == "May", c("NMDS1", "NMDS2")]), ]
-Group_cerco.March = data.scores_cerco[data.scores_cerco$Season == "March",][chull(data.scores_cerco[data.scores_cerco$Season == "March", c("NMDS1", "NMDS2")]), ]
+Group_cerco.May = data.scores_cerco[data.scores_cerco$TimePoint == "May",][chull(data.scores_cerco[data.scores_cerco$TimePoint == "May", c("NMDS1", "NMDS2")]), ]
+Group_cerco.March = data.scores_cerco[data.scores_cerco$TimePoint == "March",][chull(data.scores_cerco[data.scores_cerco$TimePoint == "March", c("NMDS1", "NMDS2")]), ]
 
 Group_cerco.Canopy = data.scores_cerco[data.scores_cerco$Stratum == "Canopy",][chull(data.scores_cerco[data.scores_cerco$Stratum == "Canopy", c("NMDS1", "NMDS2")]), ]
 Group_cerco.Ground = data.scores_cerco[data.scores_cerco$Stratum == "Ground",][chull(data.scores_cerco[data.scores_cerco$Stratum == "Ground", c("NMDS1", "NMDS2")]), ]
@@ -157,7 +157,7 @@ Group_cerco.Ground = data.scores_cerco[data.scores_cerco$Stratum == "Ground",][c
 
 hull.data_cerco_TreeSpecies = rbind(Group_cerco.Tilia, Group_cerco.Quercus, Group_cerco.Fraxinus, Group_cerco.Crane)
 
-hull.data_cerco_Season = rbind(Group_cerco.May, Group_cerco.March)
+hull.data_cerco_TimePoint = rbind(Group_cerco.May, Group_cerco.March)
 
 hull.data_cerco_Stratum = rbind(Group_cerco.Canopy, Group_cerco.Ground)
 ```
@@ -174,8 +174,8 @@ g_cerco = ggplot() +
              aes(x = NMDS1, y = NMDS2), 
              size = 3,
              color = "#5d5f66") + 
-  geom_polygon(data = hull.data_cerco_Season, 
-               aes(x=NMDS1, y=NMDS2, group = Season, color = Season), 
+  geom_polygon(data = hull.data_cerco_TimePoint, 
+               aes(x=NMDS1, y=NMDS2, group = TimePoint, color = TimePoint), 
                alpha = 0.7, fill = NA, linetype = "dashed") +
   scale_color_manual(values = c("darkslategrey", "firebrick")) +
   geom_text(aes(x = -0.2, y = -0.5, 

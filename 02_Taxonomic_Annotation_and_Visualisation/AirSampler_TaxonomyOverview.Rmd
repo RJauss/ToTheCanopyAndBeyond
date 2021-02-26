@@ -107,6 +107,10 @@ vertices$Order = c("Oomycota", ifelse(vertices$Node1 %in% TAX$Order,
 vertices$size = as.numeric(vertices$size)
 graph = graph_from_data_frame(edges, vertices = vertices, directed = T)
 set.seed(1)
+
+vertices$TopHitsMasked = gsub("_", " ", vertices$TopHitsMasked)
+vertices$TopHitsGeneraMasked = gsub("_", " ", vertices$TopHitsGeneraMasked)
+vertices$Order = gsub("Order_NoHit", NA_character_, vertices$Order)
 ```
 
 ## Plot
@@ -121,17 +125,17 @@ g = ggraph(graph, 'partition', circular = F, weight = size) +
   geom_node_label(aes(x = x, y = y, label = vertices$Order), 
                  #angle = node_angle(x, y) + ifelse(x > 0, 90, -90)), 
             hjust = 0.5, vjust = 0.5, repel = F, 
-            fill = "snow1") + 
+            fill = "snow1", size = 2.5) + 
   # Top 10 abundant taxa
   geom_node_label(aes(x = x, y = y, label = vertices$TopHitsMasked), 
                  #angle = node_angle(x, y) + ifelse(x > 0, 90, -90)), 
             hjust = 0.5, vjust = 0.5, repel = F, 
-            fill = "snow1") +
+            fill = "snow1", size = 2.5, fontface = "italic") +
   # Corresponding Genus
   geom_node_label(aes(x = x, y = y, label = vertices$TopHitsGeneraMasked), 
                  #angle = node_angle(x, y) + ifelse(x > 0, 90, -90)), 
             hjust = 0.5, vjust = 0.5, repel = F, 
-            fill = "snow1")
+            fill = "snow1", size = 2.5)
 # Get the maximum x value, this will be used to convert the axis to percent
 Maxlabel = max(g$data$width)
 g = g +
@@ -238,6 +242,13 @@ vertices_cerco$Order = c("Cercozoa", ifelse(vertices_cerco$Node1 %in% TAX_cerco$
 graph_cerco = graph_from_data_frame(edges_cerco, vertices = vertices_cerco, directed = T)
 set.seed(1)
 
+vertices_cerco$TopHitsMasked = gsub("_", " ", vertices_cerco$TopHitsMasked)
+vertices_cerco$TopHitsGeneraMasked = gsub("_", " ", vertices_cerco$TopHitsGeneraMasked)
+vertices_cerco$Order = gsub("Order_NoHit", 
+                            NA_character_, vertices_cerco$Order)
+vertices_cerco$Order = gsub("Marimonadida", 
+                            NA_character_, vertices_cerco$Order)
+
 g_cerco = ggraph(graph_cerco, 'partition', circular = F, weight = size) + 
   geom_node_tile(aes(fill = as.factor(depth)), show.legend = F) +
   theme_minimal() +
@@ -248,17 +259,22 @@ g_cerco = ggraph(graph_cerco, 'partition', circular = F, weight = size) +
   geom_node_label(aes(x = x, y = y, label = vertices_cerco$Order), 
                  #angle = node_angle(x, y) + ifelse(x > 0, 90, -90)), 
             hjust = 0.5, vjust = 0.5, repel = F, 
-            fill = "snow1") + 
+            fill = "snow1", size = 2.5, 
+            nudge_x = ifelse(vertices_cerco$Order == "Cercomonadida", 
+                             10000, 0)) + 
   # Top 10 abundant TAX_cercoa
   geom_node_label(aes(x = x, y = y, label = vertices_cerco$TopHitsMasked), 
                  #angle = node_angle(x, y) + ifelse(x > 0, 90, -90)), 
             hjust = 0.5, vjust = 0.5, repel = F, 
-            fill = "snow1") +
+            fill = "snow1", size = 2.5, fontface = "italic", 
+            nudge_x = ifelse(vertices_cerco$TopHitsMasked == "Cercomonas plasmodialis", 10000, 0)) +
   # Corresponding Genus
   geom_node_label(aes(x = x, y = y, label = vertices_cerco$TopHitsGeneraMasked), 
                  #angle = node_angle(x, y) + ifelse(x > 0, 90, -90)), 
             hjust = 0.5, vjust = 0.5, repel = F, 
-            fill = "snow1")
+            fill = "snow1", size = 2.5, 
+            nudge_x = ifelse(vertices_cerco$TopHitsGeneraMasked == "Cercomonas", 
+                             10000, 0))
 
 # Get the maximum x value, this will be used to convert the axis to percent
 Maxlabel_cerco = max(g_cerco$data$width)
@@ -301,14 +317,17 @@ combi = ggarrange(g_cerco, g,
 #       device = "tiff", dpi = 600, width = 28, height = 11, 
 #       units = "cm")
 ggsave("AirSampler_TaxonomicCompositionCombined.png", plot = combi, 
-       device = "png", dpi = 300, width = 22, height = 22, 
+       device = "png", dpi = 300, width = 17.7, height = 17.7, 
        units = "cm")
 ggsave("AirSampler_TaxonomicCompositionCombined.jpeg", plot = combi, 
-       device = "jpeg", dpi = 300, width = 22, height = 22, 
+       device = "jpeg", dpi = 300, width = 17.7, height = 17.7, 
        units = "cm")
 ggsave("AirSampler_TaxonomicCompositionCombined.pdf", plot = combi, 
-       device = "pdf", dpi = 300, width = 22, height = 22, 
+       device = "pdf", dpi = 300, width = 17.7, height = 17.7, 
        units = "cm")
+ggsave("AirSampler_TaxonomicCompositionCombined.tiff", plot = combi, 
+       device = "tiff", dpi = 300, width = 17.7, height = 17.7, 
+       units = "cm", compression = "lzw")
 
 combi
 ```

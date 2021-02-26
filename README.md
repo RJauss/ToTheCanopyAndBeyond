@@ -25,7 +25,7 @@ What's more, we also visualised the **[Taxonomy per sampling season in a sankey 
 This section provides scripts on how to **[import, explore and filter the OTU table with `Qiime`](03_Postprocessing_OTU-Table/Importing-and-Filtering-OTU-Table.md)**, how to **[extract sequences from the filtered table](03_Postprocessing_OTU-Table/Postprocessing-the-OTU-Table.md#Extract-Sequences-from-Filtered-Table)** and last but not least how to **[paste the filtered metadata into the filtered table](03_Postprocessing_OTU-Table/Postprocessing-the-OTU-Table.md#Paste-Filtered-OTU-Table-and-Filtered-Metadata)**.
 
 ### 04 Determining Alpha Diversity
-Here we deal with the methods of how to **[plot alpha diversity indices in a boxplot](04_Alpha_Diversity/AirSampler_AlphaBoxplot.md)** including pairwise significance testing.
+Here we deal with the methods of how to **[plot alpha diversity indices in a boxplot](04_Alpha_Diversity/AirSampler_AlphaBoxplot.md)** including pairwise significance testing. Also, we performed **[rarefaction analyses](04_Alpha_Diversity/AirSampler_RarefactionCurves.md)** to test if a higher sequencing depth would have revealed more OTUs.
 
 ### 05 Exploring Beta Diversity
 One of the most straightforward methods of visualising beta diversity is an NMDS plot, the script is provided **[here](05_Beta_Diversity/AirSampler_NMDS.md)**. But we also plot the number of **[shared OTUs in a Venn diagram](05_Beta_Diversity/AirSampler_VennDiagramm.md)**. 

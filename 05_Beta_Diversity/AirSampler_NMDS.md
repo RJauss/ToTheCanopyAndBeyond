@@ -39,7 +39,7 @@ OTU.NMDS.bray = metaMDS(Dist, # The distance matrix
 # Get the sample scores and add the metadata
 data.scores = as.data.frame(scores(OTU.NMDS.bray))
 data.scores$site = rownames(data.scores)
-data.scores$TimePoint = SampleMetadata$TimePoint
+data.scores$Timepoint = SampleMetadata$Timepoint
 data.scores$Stratum = SampleMetadata$Stratum
 data.scores$TreeSpecies = SampleMetadata$TreeSpecies
 data.scores$SampleID = SampleMetadata$X.SampleID
@@ -52,8 +52,8 @@ Group.Fraxinus = data.scores[data.scores$TreeSpecies == "Ash",][chull(data.score
 Group.Crane = data.scores[data.scores$TreeSpecies == "Crane",][chull(data.scores[data.scores$TreeSpecies == "Crane", c("NMDS1", "NMDS2")]), ]
 
 # The hull-data will be needed by ggplot later to draw the polygons
-Group.May = data.scores[data.scores$TimePoint == "May",][chull(data.scores[data.scores$TimePoint == "May", c("NMDS1", "NMDS2")]), ]
-Group.March = data.scores[data.scores$TimePoint == "March",][chull(data.scores[data.scores$TimePoint == "March", c("NMDS1", "NMDS2")]), ]
+Group.May = data.scores[data.scores$Timepoint == "May",][chull(data.scores[data.scores$Timepoint == "May", c("NMDS1", "NMDS2")]), ]
+Group.March = data.scores[data.scores$Timepoint == "March",][chull(data.scores[data.scores$Timepoint == "March", c("NMDS1", "NMDS2")]), ]
 
 Group.Canopy = data.scores[data.scores$Stratum == "Canopy",][chull(data.scores[data.scores$Stratum == "Canopy", c("NMDS1", "NMDS2")]), ]
 Group.Ground = data.scores[data.scores$Stratum == "Ground",][chull(data.scores[data.scores$Stratum == "Ground", c("NMDS1", "NMDS2")]), ]
@@ -62,7 +62,7 @@ Group.Ground = data.scores[data.scores$Stratum == "Ground",][chull(data.scores[d
 
 hull.data_TreeSpecies = rbind(Group.Tilia, Group.Quercus, Group.Fraxinus, Group.Crane)
 
-hull.data_TimePoint = rbind(Group.May, Group.March)
+hull.data_Timepoint = rbind(Group.May, Group.March)
 
 hull.data_Stratum = rbind(Group.Canopy, Group.Ground)
 ```
@@ -79,11 +79,11 @@ g = ggplot() +
              aes(x = NMDS1, y = NMDS2), 
              size = 3,
              color = "#5d5f66") + 
-  geom_polygon(data = hull.data_TimePoint, 
-               aes(x=NMDS1, y=NMDS2, group = TimePoint, color = TimePoint), 
+  geom_polygon(data = hull.data_Timepoint, 
+               aes(x=NMDS1, y=NMDS2, group = Timepoint, color = Timepoint), 
                alpha = 0.7, fill = NA, linetype = "dashed") +
   scale_color_manual(values = c("darkslategrey", "firebrick")) +
-  geom_text(aes(x = -0.2, y = -0.5, label = as.character(paste0(OTU.NMDS.bray$ndim, "D Stress: ", round(as.numeric(OTU.NMDS.bray$stress), digits = 3)))), parse = F, color = "#5d5f66", size = 4) +
+  geom_text(aes(x = -0.15, y = -0.5, label = as.character(paste0(OTU.NMDS.bray$ndim, "D Stress: ", round(as.numeric(OTU.NMDS.bray$stress), digits = 3)))), parse = F, color = "#5d5f66", size = 4) +
   theme_minimal() +
   theme(axis.text=element_text(size=12), 
         axis.title=element_text(size=14, face = "bold"), 
@@ -124,39 +124,72 @@ OTU.NMDS.bray_cerco = metaMDS(species_mat_cerco, # The distance matrix
                         zerodist="add") # What to do with 0's after sqrt transformation
 ```
 
-    ## Run 0 stress 0.1105759 
-    ## Run 1 stress 0.1193175 
-    ## Run 2 stress 0.1139452 
-    ## Run 3 stress 0.1127809 
-    ## Run 4 stress 0.1139454 
-    ## Run 5 stress 0.1105752 
+    ## Run 0 stress 0.110583 
+    ## Run 1 stress 0.1140196 
+    ## Run 2 stress 0.1127891 
+    ## Run 3 stress 0.1127883 
+    ## Run 4 stress 0.112803 
+    ## Run 5 stress 0.1243556 
+    ## Run 6 stress 0.1261342 
+    ## Run 7 stress 0.1139667 
+    ## Run 8 stress 0.1269665 
+    ## Run 9 stress 0.1094909 
     ## ... New best solution
-    ## ... Procrustes: rmse 0.0003923834  max resid 0.0007998605 
+    ## ... Procrustes: rmse 0.08895774  max resid 0.1926075 
+    ## Run 10 stress 0.1139669 
+    ## Run 11 stress 0.1315318 
+    ## Run 12 stress 0.1140006 
+    ## Run 13 stress 0.113029 
+    ## Run 14 stress 0.1382523 
+    ## Run 15 stress 0.1095042 
+    ## ... Procrustes: rmse 0.006233816  max resid 0.01465864 
+    ## Run 16 stress 0.1139455 
+    ## Run 17 stress 0.1243526 
+    ## Run 18 stress 0.1105884 
+    ## Run 19 stress 0.1139479 
+    ## Run 20 stress 0.1128 
+    ## Run 21 stress 0.1293889 
+    ## Run 22 stress 0.1284844 
+    ## Run 23 stress 0.1140081 
+    ## Run 24 stress 0.1139991 
+    ## Run 25 stress 0.1294988 
+    ## Run 26 stress 0.1157436 
+    ## Run 27 stress 0.1105788 
+    ## Run 28 stress 0.1243526 
+    ## Run 29 stress 0.1105821 
+    ## Run 30 stress 0.1139978 
+    ## Run 31 stress 0.1311248 
+    ## Run 32 stress 0.112794 
+    ## Run 33 stress 0.1128037 
+    ## Run 34 stress 0.1105751 
+    ## Run 35 stress 0.1128006 
+    ## Run 36 stress 0.1315348 
+    ## Run 37 stress 0.1139613 
+    ## Run 38 stress 0.1139695 
+    ## Run 39 stress 0.1095168 
+    ## ... Procrustes: rmse 0.008963409  max resid 0.02081374 
+    ## Run 40 stress 0.1127903 
+    ## Run 41 stress 0.121367 
+    ## Run 42 stress 0.1128064 
+    ## Run 43 stress 0.1315318 
+    ## Run 44 stress 0.1095003 
+    ## ... Procrustes: rmse 0.005049222  max resid 0.01224291 
+    ## Run 45 stress 0.1127928 
+    ## Run 46 stress 0.1127916 
+    ## Run 47 stress 0.1139493 
+    ## Run 48 stress 0.1183346 
+    ## Run 49 stress 0.1247599 
+    ## Run 50 stress 0.1095182 
+    ## ... Procrustes: rmse 0.009246216  max resid 0.02143507 
+    ## Run 51 stress 0.1095108 
+    ## ... Procrustes: rmse 0.007695069  max resid 0.01814233 
+    ## Run 52 stress 0.1105808 
+    ## Run 53 stress 0.1139473 
+    ## Run 54 stress 0.1095014 
+    ## ... Procrustes: rmse 0.005570667  max resid 0.01291887 
+    ## Run 55 stress 0.109493 
+    ## ... Procrustes: rmse 0.003124354  max resid 0.006966107 
     ## ... Similar to previous best
-    ## Run 6 stress 0.1235662 
-    ## Run 7 stress 0.1139662 
-    ## Run 8 stress 0.1243524 
-    ## Run 9 stress 0.1292687 
-    ## Run 10 stress 0.1094901 
-    ## ... New best solution
-    ## ... Procrustes: rmse 0.08811574  max resid 0.1931163 
-    ## Run 11 stress 0.1094891 
-    ## ... New best solution
-    ## ... Procrustes: rmse 0.00184666  max resid 0.003984963 
-    ## ... Similar to previous best
-    ## Run 12 stress 0.1127895 
-    ## Run 13 stress 0.1213648 
-    ## Run 14 stress 0.1094895 
-    ## ... Procrustes: rmse 0.001468795  max resid 0.003124801 
-    ## ... Similar to previous best
-    ## Run 15 stress 0.1127831 
-    ## Run 16 stress 0.1278536 
-    ## Run 17 stress 0.1235664 
-    ## Run 18 stress 0.1094967 
-    ## ... Procrustes: rmse 0.004222968  max resid 0.009594391 
-    ## ... Similar to previous best
-    ## Run 19 stress 0.1105752 
-    ## Run 20 stress 0.1131672 
     ## *** Solution reached
 
     ## Warning in postMDS(out$points, dis, plot = max(0, plot - 1), ...): skipping
@@ -166,7 +199,7 @@ OTU.NMDS.bray_cerco = metaMDS(species_mat_cerco, # The distance matrix
 # Get the sample scores and add the metadata
 data.scores_cerco = as.data.frame(scores(OTU.NMDS.bray_cerco))
 data.scores_cerco$site = rownames(data.scores_cerco)
-data.scores_cerco$TimePoint = SampleMetadata_cerco$TimePoint
+data.scores_cerco$Timepoint = SampleMetadata_cerco$Timepoint
 data.scores_cerco$Stratum = SampleMetadata_cerco$Stratum
 data.scores_cerco$TreeSpecies = SampleMetadata_cerco$TreeSpecies
 data.scores_cerco$SampleID = SampleMetadata_cerco$X.SampleID
@@ -179,8 +212,8 @@ Group_cerco.Fraxinus = data.scores_cerco[data.scores_cerco$TreeSpecies == "Ash",
 Group_cerco.Crane = data.scores_cerco[data.scores_cerco$TreeSpecies == "Crane",][chull(data.scores_cerco[data.scores_cerco$TreeSpecies == "Crane", c("NMDS1", "NMDS2")]), ]
 
 # The hull-data will be needed by ggplot later to draw the polygons
-Group_cerco.May = data.scores_cerco[data.scores_cerco$TimePoint == "May",][chull(data.scores_cerco[data.scores_cerco$TimePoint == "May", c("NMDS1", "NMDS2")]), ]
-Group_cerco.March = data.scores_cerco[data.scores_cerco$TimePoint == "March",][chull(data.scores_cerco[data.scores_cerco$TimePoint == "March", c("NMDS1", "NMDS2")]), ]
+Group_cerco.May = data.scores_cerco[data.scores_cerco$Timepoint == "May",][chull(data.scores_cerco[data.scores_cerco$Timepoint == "May", c("NMDS1", "NMDS2")]), ]
+Group_cerco.March = data.scores_cerco[data.scores_cerco$Timepoint == "March",][chull(data.scores_cerco[data.scores_cerco$Timepoint == "March", c("NMDS1", "NMDS2")]), ]
 
 Group_cerco.Canopy = data.scores_cerco[data.scores_cerco$Stratum == "Canopy",][chull(data.scores_cerco[data.scores_cerco$Stratum == "Canopy", c("NMDS1", "NMDS2")]), ]
 Group_cerco.Ground = data.scores_cerco[data.scores_cerco$Stratum == "Ground",][chull(data.scores_cerco[data.scores_cerco$Stratum == "Ground", c("NMDS1", "NMDS2")]), ]
@@ -189,7 +222,7 @@ Group_cerco.Ground = data.scores_cerco[data.scores_cerco$Stratum == "Ground",][c
 
 hull.data_cerco_TreeSpecies = rbind(Group_cerco.Tilia, Group_cerco.Quercus, Group_cerco.Fraxinus, Group_cerco.Crane)
 
-hull.data_cerco_TimePoint = rbind(Group_cerco.May, Group_cerco.March)
+hull.data_cerco_Timepoint = rbind(Group_cerco.May, Group_cerco.March)
 
 hull.data_cerco_Stratum = rbind(Group_cerco.Canopy, Group_cerco.Ground)
 ```
@@ -206,8 +239,8 @@ g_cerco = ggplot() +
              aes(x = NMDS1, y = NMDS2), 
              size = 3,
              color = "#5d5f66") + 
-  geom_polygon(data = hull.data_cerco_TimePoint, 
-               aes(x=NMDS1, y=NMDS2, group = TimePoint, color = TimePoint), 
+  geom_polygon(data = hull.data_cerco_Timepoint, 
+               aes(x=NMDS1, y=NMDS2, group = Timepoint, color = Timepoint), 
                alpha = 0.7, fill = NA, linetype = "dashed") +
   scale_color_manual(values = c("darkslategrey", "firebrick")) +
   geom_text(aes(x = -0.2, y = -0.5, 
@@ -242,14 +275,17 @@ combi = ggarrange(g_cerco, g,
 #       device = "tiff", dpi = 600, width = 28, height = 11, 
 #       units = "cm")
 ggsave("AirSampler_NMDSCombined.png", plot = combi, 
-       device = "png", dpi = 300, width = 20, height = 10, 
+       device = "png", dpi = 300, width = 17.7, height = 8, 
        units = "cm")
 ggsave("AirSampler_NMDSCombined.jpeg", plot = combi, 
-       device = "jpeg", dpi = 300, width = 20, height = 10, 
+       device = "jpeg", dpi = 300, width = 17.7, height = 8, 
        units = "cm")
 ggsave("AirSampler_NMDSCombined.pdf", plot = combi, 
-       device = "pdf", dpi = 300, width = 20, height = 10, 
+       device = "pdf", dpi = 300, width = 17.7, height = 8, 
        units = "cm")
+ggsave("AirSampler_NMDSCombined.tiff", plot = combi, 
+       device = "tiff", dpi = 300, width = 17.7, height = 8, 
+       units = "cm", compression = "lzw")
 
 combi
 ```

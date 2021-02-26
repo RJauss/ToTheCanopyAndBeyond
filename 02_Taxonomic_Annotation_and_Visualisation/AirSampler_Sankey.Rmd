@@ -22,7 +22,7 @@ OTU_Table = as.data.frame(read.csv("../00_Data/Oomycota/05_Oomycota_OTU_Table_ne
                      stringsAsFactors = T))
 SampleMetadata = OTU_Table[,1:5]
 Stratum = SampleMetadata$Stratum
-TimePoint = SampleMetadata$TimePoint
+Timepoint = SampleMetadata$Timepoint
 OTU_Table = OTU_Table[,6:ncol(OTU_Table)]
 species = as.matrix(OTU_Table)
 
@@ -39,7 +39,7 @@ TAX$OTU_ID = paste0("OTU", TAX$OTU_Number, "_", TAX$Species)
 TAX$Class = "Oomycota"
 
 AlluvialData = data.frame("Group" = rep(unique(TAX$Order), 2))
-AlluvialData$TimePoint = rep(c("March", "May"), each = 4)
+AlluvialData$Timepoint = rep(c("March", "May"), each = 4)
 
 ## Remove Albuginales and Order_NoHit because of very low abundance
 
@@ -47,19 +47,19 @@ AlluvialData = AlluvialData[AlluvialData$Group != "Albuginales",]
 AlluvialData = AlluvialData[AlluvialData$Group != "Order_NoHit",]
 
 summer = function(a, b){
-  sum(species[SampleMetadata$TimePoint == a, TAX$Order == b])
+  sum(species[SampleMetadata$Timepoint == a, TAX$Order == b])
 }
 
-AlluvialData$Reads = mapply(summer, AlluvialData$TimePoint, AlluvialData$Group)
+AlluvialData$Reads = mapply(summer, AlluvialData$Timepoint, AlluvialData$Group)
 
-g = ggplot(AlluvialData, aes(y = Reads, axis1 = Group, axis2 = TimePoint)) +
+g = ggplot(AlluvialData, aes(y = Reads, axis1 = Group, axis2 = Timepoint)) +
   geom_alluvium(aes(fill = Group), width = 1/12, alpha = 0.8) + 
   geom_stratum(aes(fill = Group), alpha = 0.8, 
                width = 1/12, color = "black") +
   #geom_text(stat = "stratum", aes(label = after_stat(stratum)), 
   #           size = 3) +
-  geom_text(stat = "stratum", aes(label = TimePoint), angle = 90, fontface = "bold", size = 4) +
-  scale_x_discrete(limits = c("Group", "TimePoint"), expand = c(.05, .05)) +
+  geom_text(stat = "stratum", aes(label = Timepoint), angle = 90, fontface = "bold", size = 4) +
+  scale_x_discrete(limits = c("Group", "Timepoint"), expand = c(.05, .05)) +
   scale_fill_manual(values = colorRampPalette(c("slategray4", "slategray3", "slategray2"))(length(unique(AlluvialData$Group)))) +
   theme_minimal() + 
   scale_y_continuous(label = scales::comma) +
@@ -98,7 +98,7 @@ TAX_cerco$Class = "Cercozoa"
 
 
 AlluvialData_cerco = data.frame("Group" = rep(unique(TAX_cerco$Order), 2))
-AlluvialData_cerco$TimePoint = rep(c("March", "May"), 
+AlluvialData_cerco$Timepoint = rep(c("March", "May"), 
                           each = length(unique(TAX_cerco$Order)))
 
 ## Remove Cercozoa_XX and Marimonadida because of low abundance
@@ -106,19 +106,19 @@ AlluvialData_cerco = AlluvialData_cerco[AlluvialData_cerco$Group != "Marimonadid
 AlluvialData_cerco = AlluvialData_cerco[AlluvialData_cerco$Group != "Order_NoHit",]
 
 summer_cerco = function(a, b){
-  sum(species_cerco[SampleMetadata_Cerco$TimePoint == a, TAX_cerco$Order == b])
+  sum(species_cerco[SampleMetadata_Cerco$Timepoint == a, TAX_cerco$Order == b])
 }
 
-AlluvialData_cerco$Reads = mapply(summer_cerco, AlluvialData_cerco$TimePoint, AlluvialData_cerco$Group)
+AlluvialData_cerco$Reads = mapply(summer_cerco, AlluvialData_cerco$Timepoint, AlluvialData_cerco$Group)
 
 g_cerco = ggplot(AlluvialData_cerco, 
-                 aes(y = Reads, axis1 = Group, axis2 = TimePoint)) +
+                 aes(y = Reads, axis1 = Group, axis2 = Timepoint)) +
   geom_alluvium(aes(fill = Group), width = 1/12, alpha = 0.8) + 
   geom_stratum(aes(fill = Group), width = 1/12, alpha = 0.8, color = "black") +
   #geom_text(stat = "stratum", aes(label = after_stat(stratum)), 
   #           size = 3) +
-  geom_text(stat = "stratum", aes(label = TimePoint), angle = 90, fontface = "bold", size = 4, color = "black") +
-  scale_x_discrete(limits = c("Group", "TimePoint"), expand = c(.05, .05)) +
+  geom_text(stat = "stratum", aes(label = Timepoint), angle = 90, fontface = "bold", size = 4, color = "black") +
+  scale_x_discrete(limits = c("Group", "Timepoint"), expand = c(.05, .05)) +
   #scale_fill_manual(values = colorRampPalette(c("indianred4", "#fb6a4a", "#fcae91", "#fee5d9"))(length(unique(AlluvialData_cerco$Group)))) +
   scale_fill_viridis_d(option = "magma", begin = 0.3) +
   theme_minimal() + 
@@ -150,14 +150,17 @@ combi = ggarrange(g_cerco, g,
 #       device = "tiff", dpi = 600, width = 28, height = 11, 
 #       units = "cm")
 ggsave("SankeyCombined.png", plot = combi, 
-       device = "png", dpi = 300, width = 15, height = 15, 
+       device = "png", dpi = 300, width = 17.7, height = 15, 
        units = "cm")
 ggsave("SankeyCombined.jpeg", plot = combi, 
-       device = "jpeg", dpi = 300, width = 15, height = 15, 
+       device = "jpeg", dpi = 300, width = 17.7, height = 15, 
        units = "cm")
 ggsave("SankeyCombined.pdf", plot = combi, 
-       device = "pdf", dpi = 300, width = 15, height = 15, 
+       device = "pdf", dpi = 300, width = 17.7, height = 15, 
        units = "cm")
+ggsave("SankeyCombined.tiff", plot = combi, 
+       device = "tiff", dpi = 300, width = 17.7, height = 15, 
+       units = "cm", compression = "lzw")
 
 combi
 ```

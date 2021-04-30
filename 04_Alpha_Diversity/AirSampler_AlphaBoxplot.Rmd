@@ -73,8 +73,9 @@ g = ggplot(df_melted, aes(x = Type, y = value, fill = Comparison)) +
   #geom_signif(comparisons = list(c("Canopy", "Ground")), 
   #            map_signif_level=TRUE) +
   stat_compare_means(aes(group = Comparison), label = "p.signif", 
-                     size = 5, method = "wilcox.test", 
-                     vjust = 1) +
+                     size = 5, method = "wilcox.test", vjust = 0.7, 
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("***", "**", "*", "ns"))) +
   scale_fill_manual(values = c("darkslategrey", "firebrick", 
                                "darkolivegreen4", "burlywood3"), 
                     limits = c("March", "May", "Canopy", "Ground"), 
@@ -137,8 +138,9 @@ g_cerco = ggplot(df_cerco_melted, aes(x = Type, y = value, fill = Comparison)) +
   #geom_signif(comparisons = list(c("Canopy", "Ground")), 
   #            map_signif_level=TRUE) + 
   stat_compare_means(aes(group = Comparison), label = "p.signif", 
-                     size = 5, method = "wilcox.test", 
-                     vjust = 1) +
+                     size = 5, method = "wilcox.test", vjust = 0.7, 
+                     symnum.args = list(cutpoints = c(0, 0.001, 0.01, 0.05, 1), 
+                                        symbols = c("***", "**", "*", "ns"))) +
   scale_fill_manual(values = c("darkslategrey", "firebrick", 
                                "darkolivegreen4", "burlywood3"), 
                     limits = c("March", "May", "Canopy", "Ground"), 
@@ -175,3 +177,53 @@ ggsave("AlphaBoxplotCombined.tiff", plot = combi,
        units = "cm", compression = "lzw")
 combi
 ```
+
+## Account for multiple testing
+
+The Wilcoxon Rank Sign test can be subject to multiple testing, thus we use the general linear models in the next step for significance testing.
+
+```{r glm significance testing}
+shannon = diversity(OTU_Table, index = "shannon")
+shannon = as.data.frame(shannon)
+shannon$Timepoint = Timepoint
+shannon$Stratum = Stratum
+rownames(shannon) = SampleMetadata$SampleID
+
+Cerco_shannon = diversity(Cerco_OTU_Table, index = "shannon")
+Cerco_shannon = as.data.frame(Cerco_shannon)
+Cerco_shannon$Timepoint = Cerco_Timepoint
+Cerco_shannon$Stratum = Cerco_Stratum
+rownames(Cerco_shannon) = Cerco_SampleMetadata$SampleID
+
+summary(glm(data = shannon, shannon ~ Timepoint+Stratum))
+summary(glm(data = Cerco_shannon, Cerco_shannon ~ Timepoint+Stratum))
+
+richness = specnumber(OTU_Table)
+richness = as.data.frame(richness)
+richness$Timepoint = Timepoint
+richness$Stratum = Stratum
+
+Cerco_richness = specnumber(Cerco_OTU_Table)
+Cerco_richness = as.data.frame(Cerco_richness)
+Cerco_richness$Timepoint = Cerco_Timepoint
+Cerco_richness$Stratum = Cerco_Stratum
+
+summary(glm(data = richness, richness ~ Timepoint+Stratum))
+summary(glm(data = Cerco_richness, Cerco_richness ~ Timepoint+Stratum))
+
+evenness = shannon$shannon/log(richness$richness)
+evenness = as.data.frame(evenness)
+evenness$Timepoint = Timepoint
+evenness$Stratum = Stratum
+
+Cerco_evenness = Cerco_shannon$Cerco_shannon/log(Cerco_richness$Cerco_richness)
+Cerco_evenness = as.data.frame(Cerco_evenness)
+Cerco_evenness$Timepoint = Cerco_Timepoint
+Cerco_evenness$Stratum = Cerco_Stratum
+
+summary(glm(data = evenness, evenness ~ Timepoint+Stratum))
+summary(glm(data = Cerco_evenness, Cerco_evenness ~ Timepoint+Stratum))
+```
+These results are however the same as in the boxplot with the Wilcoxon Test, we therefore do not need to update the figure per se.
+
+

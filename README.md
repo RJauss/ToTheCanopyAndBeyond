@@ -2,7 +2,7 @@
 
 Welcome to the **To the Canopy and Beyond** repository!
 
-This repository is a collection of several scripts and mini-tutorials guiding you through the methods of metabarcoding analyses which were performed in the paper by [Jauss & Nowack et al., 2020](https://doi.org/10.1101/2020.11.30.405688). The data and methods are based on the paper by [Jauss & Walden et al., 2020](https://doi.org/10.22541/au.158679920.02842084) and the corresponding Github repository [FromForestSoilToCanopy](https://github.com/RJauss/FromForestSoilToCanopy). 
+This repository is a collection of several scripts and mini-tutorials guiding you through the methods of metabarcoding analyses which were performed in the paper by [Jauss & Nowack et al., 2020](https://doi.org/10.1016/j.ejop.2021.125805). The data and methods are based on the paper by [Jauss & Walden et al., 2020](https://doi.org/10.3389/fmicb.2020.592189) and the corresponding Github repository [FromForestSoilToCanopy](https://github.com/RJauss/FromForestSoilToCanopy). 
 
 Most scripts here deal with the data for oomycetes, but they were also applied for Cercozoa if not stated otherwise. The raw data can be downloaded [here](https://www.ebi.ac.uk/ena/browser/view/PRJEB37525), plots and figures were generated with the final OTU tables (not provided) and annotation files accessible in the folder [00_Data](00_Data/). 
 
